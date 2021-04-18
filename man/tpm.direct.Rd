@@ -27,8 +27,11 @@ geneLength can be a vector (length == nrow(countsMatrix)) or a matrix (same dim 
 The geneLength is used as is, or optionally collapsed to a vector by rowMeans.
 }
 \examples{
-\dontrun{
-  myTPM <- tpm.direct(myCounts, myGeneLength)
-}
+
+   dgeObj <- readRDS(system.file("exampleObj.RDS", package = "DGEobj"))
+
+   counts <- getItem(dgeObj, "counts")
+   exonLength <- dgeObj$geneData$ExonLength
+   tpm <- tpm.direct(counts, geneLength = exonLength)
 
 }

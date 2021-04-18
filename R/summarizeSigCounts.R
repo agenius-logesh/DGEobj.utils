@@ -16,7 +16,7 @@
 #'   Default = c("P.Value", "adj.P.Val", "Qvalue", "qvalue.lfdr", "ihw.adj_pvalue")
 #' @param sigThresholds Thresholds to use for each column specified in columns
 #'   Must be same length at columns argument.
-#'   Default = c(0.01, 0.1, 0.1, 0.1, 0.1)
+#'   Default = c(0.01, 0.05, 0.05, 0.05, 0.05)
 #' @param fcThreshold Fold-change threshold (absolute value, not logged.)
 #'
 #' @return data.frame with one summary row per contrast.
@@ -25,24 +25,23 @@
 #' @importFrom assertthat assert_that
 #'
 #' @examples
-#' \dontrun{
-#'    # Get a contrast list from a dgeObj
-#'    myContrastList <- DGEobj::getType(DGEobj, "topTable")
+#'    dgeObj <- readRDS(system.file("exampleObj.RDS", package = "DGEobj"))
+#'    contrastList <- getType(dgeObj, type = "topTable")
 #'
-#'    # All default thresholds, no fold change threshold
-#'    mySigSummary <- summarizeSigCounts(myContrastList)
+#'    #all defaults
+#'    sigSummary <- summarizeSigCounts(contrastList)
 #'
-#'    # All defaults with a foldchange threshold
-#'    mySigSummary <- summarizeSigCounts(myContrastList, fcThreshold = 1.5)
+#'    #add the fold-chage threshold
+#'    sigSummary <- summarizeSigCounts(contrastList, fcThreshold = 2)
 #'
-#'    # Change the p-value and fdr thresholds
-#'    mySigSummary <- summarizeSigCounts(myContrastList, sigThresholds = c(0.05, 0.2, 0.2, 0.2, 0.2))
-#' }
+#'    #change the significance thresholds
+#'    sigSummary <- summarizeSigCounts(contrastList,
+#'                                     sigThresholds = c(0.01, 0.1, 0.1, 0.1, 0.1))
 #'
 #' @export
 summarizeSigCounts <- function(contrastList,
                                columns = c("P.Value", "adj.P.Val", "Qvalue", "qvalue.lfdr", "ihw.adj_pvalue"),
-                               sigThresholds = c(0.01, 0.1, 0.1, 0.1, 0.1),
+                               sigThresholds = c(0.01, 0.05, 0.05, 0.05, 0.05),
                                fcThreshold = 0) {
 
     assertthat::assert_that(length(columns) == length(sigThresholds),
@@ -51,11 +50,9 @@ summarizeSigCounts <- function(contrastList,
     # Functions
     getSigCounts <- function(df,
                              columns = c("P.Value", "adj.P.Val", "Qvalue", "qvalue.lfdr", "ihw.adj_pvalue"),
-                             thresholds = c(0.01, 0.1, 0.1, 0.1, 0.1),
+                             thresholds = c(0.01, 0.05, 0.05, 0.05, 0.05),
                              fcThreshold = 0) {
-        # Pass a topTable df, vector of field names, a threshold and optionally a fcThreshold)
-        # Then get the sigcounts
-        # Return a vector of named values
+
         CountSig <- function(df, column, threshold, fcThreshold = 0){
             # Supply a field and a threshold.
             # Return the number of samples <= threshold

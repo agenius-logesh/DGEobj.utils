@@ -49,6 +49,7 @@ extractCol <- function(contrastList, colName, robust = TRUE){
     )
 }
 
+
 # Helper functions
 .extractCol1 <- function(contrastList, colName){
     assertthat::assert_that("list" %in% class(contrastList),
